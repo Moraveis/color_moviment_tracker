@@ -1,4 +1,4 @@
-//COMPILE COMMAND : sudo g++ detectorMovimentoCores_v1.0.cpp -o detector `pkg-config --cflags --libs opencv`
+//COMPILE COMMAND : sudo g++ detectorMovimentoCores_v1.1.cpp -o detector `pkg-config --cflags --libs opencv`
 
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
@@ -44,7 +44,15 @@ int main(){
 
   while(1){
     cap >> frameMotion1; // get a new frame from camera
-    cvtColor(frameMotion1, grayMotion1, CV_BGR2GRAY);
+    //cvtColor(frameMotion1, grayMotion1, CV_BGR2GRAY);
+
+    //bilateralFilter ( src, dst, d(diameter of each pixel neighborhood), sigmaColor, sigmaSpace );
+    bilateralFilter(frameMotion1, smoothImage,20,100,100);
+    namedWindow("bilateralFilter",CV_WINDOW_NORMAL);
+    imshow("bilateralFilter", smoothImage);
+    resizeWindow("bilateralFilter",620,500);
+
+    cvtColor(smoothImage, grayMotion1, CV_BGR2GRAY);
 
     cap >> frameMotion2;
     cvtColor(frameMotion2, grayMotion2, CV_BGR2GRAY);
@@ -183,9 +191,10 @@ void showImgContours(Mat &threshedimg, Mat &original)
 	//search for largest contour has end
 	if (contours.size() > 0)
 	{
-		drawContours(original, contours,largest_contour_index, CV_RGB(0, 255, 0), 2, 8, hierarchy);
+		drawContours(original, contours,largest_contour_index, CV_RGB(0, 0, 255), 2, 8, hierarchy);
 
 		//if want to show all contours use below one
 		//drawContours(original,contours,-1, CV_RGB(0, 255, 0), 2, 8, hierarchy);
 	}
+  //imshow("teste", original);
 }
